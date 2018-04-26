@@ -49,7 +49,10 @@ let fakeServerData = {
 class App extends Component {
   constructor(){
     super()
-    this.state = {serverData: {}}
+    this.state = {
+      serverData: {},
+      filterString: ''
+    }
   }
   componentDidMount(){
     setTimeout(() => {
@@ -70,9 +73,12 @@ class App extends Component {
         </h1>}
         <PlaylistCounter playlist={this.state.serverData.user.playlist}/>
         <HoursCounter playlist={this.state.serverData.user.playlist}/>
-        <Filter />
+        <Filter onTextChange = {text => this.setState({filterString:text})}/>
         {
-          this.state.serverData.user.playlist.map(playlist =>
+          this.state.serverData.user.playlist.filter(playlist =>
+            playlist.name.toLowerCase().includes
+            (this.state.filterString.toLowerCase())
+          ).map(playlist =>
           <PlayList playlist={playlist}/>
         )}
       </div> : <h1 style= {{...defaultStyle}}>'Loading...'</h1>
@@ -87,7 +93,8 @@ class Filter extends Component {
     return (
       <div style={defaultStyle}>
         <img />
-        <input type="text"/>
+        <input type="text" onKeyUp={event => 
+          this.props.onTextChange(event.target.value)}/>
       </div>
     )
   }
